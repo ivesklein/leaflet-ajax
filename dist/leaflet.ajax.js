@@ -347,6 +347,7 @@ module.exports = function (url, options) {
     var response;
     request = new global.XMLHttpRequest();
     request.open('GET', url);
+    request.withCredentials = true;
     request.onreadystatechange = function () {
       if (request.readyState === 4) {
         if ((request.status < 400 && options.local) || request.status === 200) {
@@ -387,6 +388,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     dataType: 'json',
     callbackParam: 'callback',
     local: false,
+    onAjaxResolve : function(f){},
     middleware: function (f) {
       return f;
     }
@@ -448,6 +450,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
       if (self.ajaxParams.dataType.toLowerCase() === 'json') {
         ajax(url, self.ajaxParams).then(function (d) {
           var data = self.ajaxParams.middleware(d);
+          if("onAjaxResolve" in self.ajaxParams)
+            self.ajaxParams.onAjaxResolve(data)
           self.addData(data);
           self.fire('data:progress', data);
         }, function (err) {

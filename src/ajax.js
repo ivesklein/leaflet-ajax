@@ -17,6 +17,7 @@ module.exports = function (url, options) {
     var response;
     request = new global.XMLHttpRequest();
     request.open('GET', url);
+    request.withCredentials = true;
     request.onreadystatechange = function () {
       if (request.readyState === 4) {
         if ((request.status < 400 && options.local) || request.status === 200) {
